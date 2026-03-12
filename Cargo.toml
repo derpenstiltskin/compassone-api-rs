@@ -1,0 +1,21 @@
+[package]
+name = "compassone-api-rs"
+version = "0.1.0"
+edition = "2024"
+authors = ["Dustin Riley <dustin@derpenstiltskin.com>"]
+categories = ["api-bindings"]
+description = "Rust wrapper for the Blackpoint Cyber CompassOne REST API."
+homepage = "https://github.com/derpenstiltskin/compassone-api-rs"
+keywords = ["blackpoint", "compassone", "api"]
+license = "MIT"
+repository = "https://github.com/derpenstiltskin/compassone-api-rs"
+rust-version = "1.94.0"
+
+[dependencies]
+chrono = { version = "0.4.44", features = ["serde"] }
+governor = { version = "0.10.4" }
+reqwest = { version = "0.13.2", features = ["json"] }
+serde = { version = "1.0.228", features = ["derive"] }
+serde_json = { version = "1.0.149" }
+thiserror = { version = "2.0.18" }
+tokio = { version = "1.50.0", features = ["full"] }
