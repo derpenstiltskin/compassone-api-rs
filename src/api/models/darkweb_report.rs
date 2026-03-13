@@ -1,0 +1,1 @@
+pub type DarkwebReportModel = String;
