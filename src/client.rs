@@ -6,110 +6,111 @@ use governor::{
 use reqwest::Client;
 use std::{num::NonZeroU32, sync::Arc, time::Duration};
 
-use crate::api::handlers::*;
+use crate::handlers::*;
 
-const CO_API_PROD_BASE_URL: &str = "";
-const CO_API_MOCK_BASE_URL: &str = "";
 const CO_API_REQUESTS_PER_HOUR: NonZeroU32 = NonZeroU32::new(2000).unwrap();
-const CO_CLIENT_USER_AGENT: &str = "compassone-api-rs";
+const CO_CLIENT_DEFAULT_USER_AGENT: &str = "compassone-api-rs";
 
-pub enum CompassOneClientType {
+pub enum CompassOneApiType {
     PRODUCTION,
     MOCK,
 }
 
-pub struct CompassOneClient {
+pub struct CompassOneApi {
+    pub base_url: String,
+    pub api_key: String,
+    pub api_type: CompassOneApiType
+}
+
+pub struct CompassOneClient<'a> {
     client: Client,
-    base_url: String,
-    api_key: String,
+    api: &'a CompassOneApi,
     user_agent: String,
     limiter: Arc<RateLimiter<NotKeyed, InMemoryState, DefaultClock>>,
 }
 
-impl CompassOneClient {
-    pub fn new(client_type: CompassOneClientType, api_key: &str, user_agent: Option<&str>) -> Self {
+impl<'a> CompassOneClient<'a> {
+    pub fn new(compass_one_client: &'a CompassOneApi, user_agent: Option<&str>) -> Self {
         Self {
             client: reqwest::ClientBuilder::new()
                 .timeout(Duration::from_secs(30))
                 .build()
                 .expect("Client::new()"),
-            base_url: match client_type {
-                CompassOneClientType::PRODUCTION => CO_API_PROD_BASE_URL.to_string(),
-                CompassOneClientType::MOCK => CO_API_MOCK_BASE_URL.to_string(),
-            },
-            api_key: api_key.to_string(),
+            api: compass_one_client,
             user_agent: if let Some(user_agent) = user_agent {
-                user_agent.to_string()
+                 user_agent.to_string()
             } else {
-                CO_CLIENT_USER_AGENT.to_string()
+                CO_CLIENT_DEFAULT_USER_AGENT.to_string()
             },
-            limiter: Arc::new(RateLimiter::direct(Quota::per_hour(
-                CO_API_REQUESTS_PER_HOUR,
-            ))),
+            limiter: Arc::new(RateLimiter::direct(Quota::per_hour(CO_API_REQUESTS_PER_HOUR))),
         }
     }
 
-    pub fn account(&self) -> AccountHandler<'_> {
+    pub async fn request(&self) {
+
+    }
+
+    pub fn account(&self) -> AccountHandler<'_, '_> {
         AccountHandler::new(self)
     }
 
-    pub fn asset(&self) -> AssetHandler<'_> {
+    pub fn asset(&self) -> AssetHandler<'_, '_> {
         AssetHandler::new(self)
     }
 
-    pub fn cloud_mdr(&self) -> CloudMdr<'_> {
+    pub fn cloud_mdr(&self) -> CloudMdr<'_, '_> {
         CloudMdr::new(self)
     }
 
-    pub fn cloud_mdr_cisco(&self) -> CloudMdrCisco<'_> {
+    pub fn cloud_mdr_cisco(&self) -> CloudMdrCisco<'_, '_> {
         CloudMdrCisco::new(self)
     }
 
-    pub fn cloud_mdr_google(&self) -> CloudMdrGoogle<'_> {
+    pub fn cloud_mdr_google(&self) -> CloudMdrGoogle<'_, '_> {
         CloudMdrGoogle::new(self)
     }
 
-    pub fn cloud_mdr_m365(&self) -> CloudMdrM365<'_> {
+    pub fn cloud_mdr_m365(&self) -> CloudMdrM365<'_, '_> {
         CloudMdrM365::new(self)
     }
 
-    pub fn collection(&self) -> CollectionHandler<'_> {
+    pub fn collection(&self) -> CollectionHandler<'_, '_> {
         CollectionHandler::new(self)
     }
 
-    pub fn contact_group(&self) -> ContactGroupHandler<'_> {
+    pub fn contact_group(&self) -> ContactGroupHandler<'_, '_> {
         ContactGroupHandler::new(self)
     }
 
-    pub fn detections(&self) -> DetectionsHandler<'_> {
+    pub fn detections(&self) -> DetectionsHandler<'_, '_> {
         DetectionsHandler::new(self)
     }
 
-    pub fn notifications(&self) -> NotificationsHandler<'_> {
+    pub fn notifications(&self) -> NotificationsHandler<'_, '_> {
         NotificationsHandler::new(self)
     }
 
-    pub fn tenant(&self) -> TenantHandler<'_> {
+    pub fn tenant(&self) -> TenantHandler<'_, '_> {
         TenantHandler::new(self)
     }
 
-    pub fn users(&self) -> UsersHandler<'_> {
+    pub fn users(&self) -> UsersHandler<'_, '_> {
         UsersHandler::new(self)
     }
 
-    pub fn vm_darkweb(&self) -> VmDarkwebHandler<'_> {
+    pub fn vm_darkweb(&self) -> VmDarkwebHandler<'_, '_> {
         VmDarkwebHandler::new(self)
     }
 
-    pub fn vm_external(&self) -> VmExternalHandler<'_> {
+    pub fn vm_external(&self) -> VmExternalHandler<'_, '_> {
         VmExternalHandler::new(self)
     }
 
-    pub fn vm_scans(&self) -> VmScansHandler<'_> {
+    pub fn vm_scans(&self) -> VmScansHandler<'_, '_> {
         VmScansHandler::new(self)
     }
 
-    pub fn vm_vulnerabilities(&self) -> VmVulnerabilities<'_> {
-        VmVulnerabilities::new(self)
+    pub fn vm_vulnerabilities(&self) -> VmVulnerabilitiesHandler<'_, '_> {
+        VmVulnerabilitiesHandler::new(self)
     }
 }
