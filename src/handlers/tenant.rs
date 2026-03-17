@@ -1,11 +1,24 @@
-use crate::CompassOneClient;
+use serde::{Deserialize, Serialize};
 
-pub struct TenantHandler<'co> {
-    client: &'co CompassOneClient,
+use crate::{
+    CompassOneClient,
+    handlers::GenericListSortOrder,
+};
+
+pub struct TenantHandler<'c, 'h> {
+    client: &'h CompassOneClient<'c>,
 }
 
-impl<'co> TenantHandler<'co> {
-    pub(crate) fn new(client: &'co CompassOneClient) -> Self {
+impl<'c, 'h> TenantHandler<'c, 'h> {
+    pub(crate) fn new(client: &'h CompassOneClient<'c>) -> Self {
         Self { client }
+    }
+
+    pub fn get_tenant(&self) -> TenantGetBuilder<'_, '_, '_> {
+        TenantGetBuilder::new(self)
+    }
+
+    pub fn list_tenants(&self) -> TenantListBuilder<'_, '_, '_> {
+        TenantListBuilder::new(self)
     }
 }

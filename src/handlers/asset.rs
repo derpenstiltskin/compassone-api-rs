@@ -75,7 +75,7 @@ pub struct AssetHandler<'c, 'h> {
 
 impl<'c, 'h> AssetHandler<'c, 'h> {
     pub(crate) fn new(client: &'h CompassOneClient<'c>) -> Self {
-        Self { client}
+        Self { client }
     }
 
     pub fn get_asset(&self, id: &str) -> AssetGetBuilder<'_, '_, '_> {
@@ -86,8 +86,8 @@ impl<'c, 'h> AssetHandler<'c, 'h> {
         AssetListBuilder::new(self, class)
     }
 
-    pub fn list_asset_relationships(&self, id: &str, class: AssetClass, direction: AssetRelationshipDirection) -> AssetRelationshipListBuilder<'_, '_, '_> {
-        AssetRelationshipListBuilder::new(self, id, class, direction)
+    pub fn list_asset_relationships(&self, id: &str, class: AssetClass, direction: AssetRelationshipDirection) -> AssetListRelationshipsBuilder<'_, '_, '_> {
+        AssetListRelationshipsBuilder::new(self, id, class, direction)
     }
 }
 
@@ -248,7 +248,7 @@ impl<'c, 'h, 'r> AssetListBuilder<'c, 'h, 'r> {
 
 #[derive(Serialize)]
 #[serde(rename_all(serialize = "camelCase"))]
-pub struct AssetRelationshipListBuilder<'c, 'h, 'r> {
+pub struct AssetListRelationshipsBuilder<'c, 'h, 'r> {
     #[serde(skip)]
     handler: &'r AssetHandler<'c, 'h>,
     #[serde(skip)]
@@ -269,7 +269,7 @@ pub struct AssetRelationshipListBuilder<'c, 'h, 'r> {
     sort_order: Option<GenericListSortOrder>,
 }
 
-impl<'c, 'h, 'r> AssetRelationshipListBuilder<'c, 'h, 'r> {
+impl<'c, 'h, 'r> AssetListRelationshipsBuilder<'c, 'h, 'r> {
     pub(crate) fn new(handler: &'r AssetHandler<'c, 'h>, id: &str, class: AssetClass, direction: AssetRelationshipDirection) -> Self {
         Self {
             handler,

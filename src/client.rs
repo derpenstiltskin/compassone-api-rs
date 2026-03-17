@@ -58,20 +58,20 @@ impl<'a> CompassOneClient<'a> {
         AssetHandler::new(self)
     }
 
-    pub fn cloud_mdr(&self) -> CloudMdr<'_, '_> {
-        CloudMdr::new(self)
+    pub fn cloud_mdr(&self) -> CloudMdrHandler<'_, '_> {
+        CloudMdrHandler::new(self)
     }
 
-    pub fn cloud_mdr_cisco(&self) -> CloudMdrCisco<'_, '_> {
-        CloudMdrCisco::new(self)
+    pub fn cloud_mdr_cisco(&self) -> CloudMdrCiscoHandler<'_, '_> {
+        CloudMdrCiscoHandler::new(self)
     }
 
-    pub fn cloud_mdr_google(&self) -> CloudMdrGoogle<'_, '_> {
-        CloudMdrGoogle::new(self)
+    pub fn cloud_mdr_google(&self) -> CloudMdrGoogleHandler<'_, '_> {
+        CloudMdrGoogleHandler::new(self)
     }
 
-    pub fn cloud_mdr_m365(&self) -> CloudMdrM365<'_, '_> {
-        CloudMdrM365::new(self)
+    pub fn cloud_mdr_m365(&self) -> CloudMdrM365Handler<'_, '_> {
+        CloudMdrM365Handler::new(self)
     }
 
     pub fn collection(&self) -> CollectionHandler<'_, '_> {
